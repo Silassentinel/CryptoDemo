@@ -2,6 +2,6 @@ import { PubF } from "./typeExtensions/Pubf";
 
 export class publicKeyEncoding
 {
-    type: string = 'spki';
+    type!: 'spki';
     format: PubF = "pem";
 }

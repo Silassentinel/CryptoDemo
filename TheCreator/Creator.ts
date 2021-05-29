@@ -3,28 +3,23 @@ import { generateKeyPairSync } from "crypto";
 import { writeFileSync } from "node:fs";
 import fs from "fs";
 import path from "node:path";
-import { publicKeyEncoding } from "Models/PublicKeyEncodings";
-import { privateKeyEncoding } from "Models/PrivateKeyEncodings";
+import { RSAKeyPairOps } from "Models/RsaKeyPairOpts/RsaKeyPairOpts";
 
 export class Creator
 {
     modulusLength: number = 2048;
-    generateKeys = (modulusLength: number, publicKeyEncoding: publicKeyEncoding, privateKeyEncoding: privateKeyEncoding, encryptionType: "x448" = "x448", namedCurve: string = "secp256k1") =>
+    generateKeys = (options: RSAKeyPairOps, encryptionType: "rsa" = "rsa") =>
     {
-        return generateKeyPairSync(encryptionType,
-            {
-                modulusLength,
-                namedCurve,
-                publicKeyEncoding,
-                privateKeyEncoding
-            });
+        return generateKeyPairSync(encryptionType, options);
     };
-    writeKeysToDisk = (modulusLength: number, varpublicKeyEncoding: publicKeyEncoding, varprivateKeyEncoding: privateKeyEncoding): void =>
+    // first
+    writeKeysToDisk = (options: RSAKeyPairOps, encryptionType: "rsa" = "rsa"): void =>
     {
-        const { publicKey, privateKey } = this.generateKeys(modulusLength, varpublicKeyEncoding, varprivateKeyEncoding);
+        const { publicKey, privateKey } = this.generateKeys(options,encryptionType);
         writeFileSync('private.pem', privateKey.export());
         writeFileSync('public.pem', publicKey.export());
     };
+    // then 
     encryptStringWithRsaPublicKey = (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string) =>
     {
         const absolutePath = path.resolve(relativeOrAbsolutePathToPublicKey);
@@ -33,7 +28,7 @@ export class Creator
         const encrypted = crypto.publicEncrypt(publicKey, buffer);
         return encrypted.toString("base64");
     };
-
+    // or this
     decryptStringWithRsaPrivateKey = (toDecrypt: string, relativeOrAbsolutePathtoPrivateKey: string) =>
     {
         const absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey);
