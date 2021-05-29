@@ -1,3 +1,5 @@
+import { Creator } from "TheCreator/Creator";
+
 const Obfuscator = (text: string): string => 
 {
     let temp: string;
@@ -22,6 +24,7 @@ const Obfuscator = (text: string): string =>
         element = element.replace("m", "nn");
         element = element.replace("z", "2");
         // encrypt here
+        element = new Creator().encryptStringWithRsaPublicKey(element,"./")
         return element;
     });
     temp = tempArr.reverse().join('');

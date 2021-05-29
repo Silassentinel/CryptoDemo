@@ -4,6 +4,7 @@ import { writeFileSync } from "node:fs";
 import fs from "fs";
 import path from "node:path";
 import { RSAKeyPairOps } from "Models/RsaKeyPairOpts/RsaKeyPairOpts";
+import { RsaPrivateKey } from "node:crypto";
 
 export class Creator
 {
@@ -16,27 +17,27 @@ export class Creator
     writeKeysToDisk = (options: RSAKeyPairOps, encryptionType: "rsa" = "rsa"): void =>
     {
         const { publicKey, privateKey } = this.generateKeys(options,encryptionType);
-        writeFileSync('private.pem', privateKey.export());
-        writeFileSync('public.pem', publicKey.export());
+        writeFileSync('../Keys/private.pem', privateKey.export());
+        writeFileSync('../Keys/public.pem', publicKey.export());
     };
     // then 
-    encryptStringWithRsaPublicKey = (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string) =>
+    encryptStringWithRsaPublicKey = (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string):string =>
     {
-        const absolutePath = path.resolve(relativeOrAbsolutePathToPublicKey);
-        const publicKey = fs.readFileSync(absolutePath, "utf8");
-        const buffer = Buffer.from(toEncrypt);
-        const encrypted = crypto.publicEncrypt(publicKey, buffer);
+        const absolutePath: string = path.resolve(relativeOrAbsolutePathToPublicKey);
+        const publicKey:string = fs.readFileSync(absolutePath, "utf8");
+        const buffer: Buffer = Buffer.from(toEncrypt);
+        const encrypted : Buffer = crypto.publicEncrypt(publicKey, buffer);
         return encrypted.toString("base64");
     };
     // or this
-    decryptStringWithRsaPrivateKey = (toDecrypt: string, relativeOrAbsolutePathtoPrivateKey: string) =>
+    decryptStringWithRsaPrivateKey = (toDecrypt: string, relativeOrAbsolutePathtoPrivateKey: string):string =>
     {
-        const absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey);
-        const privateKey = fs.readFileSync(absolutePath, "utf8");
-        const buffer = Buffer.from(toDecrypt, "base64");
-        const decrypted = crypto.privateDecrypt(
+        const absolutePath : string = path.resolve(relativeOrAbsolutePathtoPrivateKey);
+        const privateKey : string = fs.readFileSync(absolutePath, "utf8");
+        const buffer : Buffer = Buffer.from(toDecrypt, "base64");
+        const decrypted : Buffer = crypto.privateDecrypt(
             {
-                key: privateKey.toString(),
+                key: privateKey,
                 passphrase: "passphrase",
             },
             buffer,
