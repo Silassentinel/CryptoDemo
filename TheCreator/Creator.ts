@@ -1,56 +1,44 @@
 import * as crypto from "crypto";
-import { generateKeyPairSync } from "node:crypto";
+import { generateKeyPairSync } from "crypto";
 import { writeFileSync } from "node:fs";
 import fs from "fs";
 import path from "node:path";
 import { publicKeyEncoding } from "Models/PublicKeyEncodings";
 import { privateKeyEncoding } from "Models/PrivateKeyEncodings";
 
-
 export class Creator
 {
-    EncryptionType: string = "rsa";
-    privateKeyOptions: privateKeyEncoding = {
-        type: 'pkcs8',
-        format: 'pem',
-        cipher: 'aes-256-cbc',
-        passphrase: ""
-    };
-    publicKeyOptions: publicKeyEncoding = {
-        type: 'spki',
-        format: 'pem'
-    };
-    modulusLength: number = 4096;
-    generateKeys = (publicKeyEncoding: publicKeyEncoding, privateKeyEncoding: privateKeyEncoding): crypto.KeyPairSyncResult<string, string> =>
+    modulusLength: number = 2048;
+    generateKeys = (modulusLength: number, publicKeyEncoding: publicKeyEncoding, privateKeyEncoding: privateKeyEncoding, encryptionType: "x448" = "x448", namedCurve: string = "secp256k1") =>
     {
-        return generateKeyPairSync('rsa',
+        return generateKeyPairSync(encryptionType,
             {
-                modulusLength: 4096,
-                namedCurve: 'secp256k1',
+                modulusLength,
+                namedCurve,
                 publicKeyEncoding,
                 privateKeyEncoding
             });
     };
-    writeKeysToDisk = (varpublicKeyEncoding: publicKeyEncoding, varprivateKeyEncoding: privateKeyEncoding): void =>
+    writeKeysToDisk = (modulusLength: number, varpublicKeyEncoding: publicKeyEncoding, varprivateKeyEncoding: privateKeyEncoding): void =>
     {
-        const { publicKey, privateKey } = this.generateKeys(varpublicKeyEncoding,varprivateKeyEncoding);
-        writeFileSync('private.pem', privateKey);
-        writeFileSync('public.pem', publicKey);
+        const { publicKey, privateKey } = this.generateKeys(modulusLength, varpublicKeyEncoding, varprivateKeyEncoding);
+        writeFileSync('private.pem', privateKey.export());
+        writeFileSync('public.pem', publicKey.export());
     };
-    encryptStringWithRsaPublicKey = function (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string)
+    encryptStringWithRsaPublicKey = (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string) =>
     {
-        var absolutePath = path.resolve(relativeOrAbsolutePathToPublicKey);
-        var publicKey = fs.readFileSync(absolutePath, "utf8");
-        var buffer = Buffer.from(toEncrypt);
-        var encrypted = crypto.publicEncrypt(publicKey, buffer);
+        const absolutePath = path.resolve(relativeOrAbsolutePathToPublicKey);
+        const publicKey = fs.readFileSync(absolutePath, "utf8");
+        const buffer = Buffer.from(toEncrypt);
+        const encrypted = crypto.publicEncrypt(publicKey, buffer);
         return encrypted.toString("base64");
     };
 
-    decryptStringWithRsaPrivateKey = function (toDecrypt: string, relativeOrAbsolutePathtoPrivateKey: string)
+    decryptStringWithRsaPrivateKey = (toDecrypt: string, relativeOrAbsolutePathtoPrivateKey: string) =>
     {
-        var absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey);
-        var privateKey = fs.readFileSync(absolutePath, "utf8");
-        var buffer = Buffer.from(toDecrypt, "base64");
+        const absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey);
+        const privateKey = fs.readFileSync(absolutePath, "utf8");
+        const buffer = Buffer.from(toDecrypt, "base64");
         const decrypted = crypto.privateDecrypt(
             {
                 key: privateKey.toString(),
