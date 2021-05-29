@@ -5,8 +5,16 @@ const { o } = argv;
 const { u } = argv;
 import Obfuscator from "./Obfu/Obfuscator";
 import DeObfuscator from "./Obfu/DeObfuscator"
+import { Creator } from "TheCreator/Creator";
+import { RSAKeyPairOps } from "Models/RsaKeyPairOpts/RsaKeyPairOpts";
+import { encryptionType } from "Models/enxryptionType";
 // let obfuscated;
 // let deObfuscated;
+
+
+const cret :Creator = new Creator();
+cret.generateKeys(new RSAKeyPairOps(), new encryptionType().encryptionType);
+
 if (o)
 {
     console.log(Obfuscator(o));
