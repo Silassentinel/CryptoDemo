@@ -22,7 +22,7 @@ const DeObfuscator = (text:string) : string =>
     //     element = element.replace("s","5")
     //     element = element.replace("m","nn");
     //     element = element.replace("z","2");
-    //     element = crypto.createDecipheriv("sha512")
+    //     element = new Creator().decryptStringWithRsaPrivateKey(element,"../Keys/private.pem") 
     //     return element;
     // })
     // temp = tempArr.reverse().join('');

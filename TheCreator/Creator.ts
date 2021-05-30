@@ -1,8 +1,8 @@
 import * as crypto from "crypto";
 import { generateKeyPairSync } from "crypto";
-import { writeFileSync } from "node:fs";
+import { writeFileSync } from "fs";
 import fs from "fs";
-import path from "node:path";
+import path from "path";
 import { RSAKeyPairOps } from "Models/RsaKeyPairOpts/RsaKeyPairOpts";
 
 export class Creator
@@ -16,14 +16,14 @@ export class Creator
     writeKeysToDisk = (options: RSAKeyPairOps, encryptionType: "rsa" = "rsa"): void =>
     {
         const { publicKey, privateKey } = this.generateKeys(options, encryptionType);
-        const privateLocation: string = "../Keys/private.pem";
-        const publicLocation: string = "../Keys/public.pem";
-        if (fs.existsSync(privateLocation) && fs.existsSync(publicLocation))
-        {
-            writeFileSync(privateLocation, privateKey.export());
-            writeFileSync(publicLocation, publicKey.export());
-        }
-        else this.writeKeysToDisk(options, encryptionType);
+        const privateLocation: string = "./private.pem";
+        const publicLocation: string = "./public.pem";
+        // if (fs.existsSync(privateLocation.split('./Keys/')[0]) && fs.existsSync(publicLocation.split('./Keys/')[0]))
+        // {
+            writeFileSync(privateLocation, privateKey.toString());
+            writeFileSync(publicLocation, publicKey.toString());
+        // }
+        // else return;
     };
     // then 
     encryptStringWithRsaPublicKey = (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string): string =>

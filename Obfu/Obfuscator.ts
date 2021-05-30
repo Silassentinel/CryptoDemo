@@ -1,6 +1,7 @@
-import { Creator } from "TheCreator/Creator";
+import { string } from "yargs";
+import { Creator } from "../TheCreator/Creator";
 
-const Obfuscator = (text: string): string => 
+const Obfuscator = (text: string, location: string): string => 
 {
     let temp: string;
     let tempArr: string[];
@@ -24,7 +25,11 @@ const Obfuscator = (text: string): string =>
         element = element.replace("m", "nn");
         element = element.replace("z", "2");
         // encrypt here
-        element = new Creator().encryptStringWithRsaPublicKey(element,"./")
+        if(location.length !== 0 && location !== " "  || location !== "" )
+        {
+            element = new Creator().encryptStringWithRsaPublicKey(element,location)
+        }
+        else element = new Creator().encryptStringWithRsaPublicKey(element,"./public.pem")
         return element;
     });
     temp = tempArr.reverse().join('');
