@@ -22,3 +22,4 @@ TODO:
 
 - flag to write to disk with location where to absolut and relative
 - flag to enable encryption
+- flag to decrypt
