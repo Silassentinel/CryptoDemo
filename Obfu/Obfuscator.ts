@@ -1,17 +1,14 @@
 import { Creator } from "../TheCreator/Creator";
 
-const Obfuscator = (text: string, location: string): string => 
+const Obfuscator = (text: string, location: string, encrypt:boolean ): string => 
 {
     let temp: string;
-    //let tempWordArray: string [];
     let tempArr: string[];
-    let wordCount : number = 0;
+    console.log(location);
     temp = text;
-    tempArr = temp.split(' ');
-    // tempArr = tempArr.filter(element => { if (element !== " ") { return element; } else { ++wordCount;
-    //     return}; });
-    tempArr = tempArr.map(element => element.toLocaleLowerCase());
-    tempArr = tempArr.map(element =>
+    tempArr = temp.split(' ')
+    .map(element => element.toLocaleLowerCase())
+    .map(element =>
     {
         element = element.replace('a', "4");
         element = element.replace("e", "3");
@@ -27,16 +24,17 @@ const Obfuscator = (text: string, location: string): string =>
         element = element.replace("m", "nn");
         element = element.replace("z", "2");
         // encrypt here
-        if(location.length !== 0 && location !== " "  || location !== "" )
+        if(encrypt)
         {
-            element = new Creator().encryptStringWithRsaPublicKey(element,location)
+            if(location.length !== 0 && location !== " "  || location !== "" )
+            {
+                element = new Creator().encryptStringWithRsaPublicKey(element,location)
+            }
+            else element = new Creator().encryptStringWithRsaPublicKey(element,"./public.pem")
         }
-        else element = new Creator().encryptStringWithRsaPublicKey(element,"./public.pem")
         return element;
     });
     temp = tempArr.reverse().join('_');
-    console.log(wordCount)
-    //temp = temp.replace(',', '');
     return temp;
 };
 

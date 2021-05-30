@@ -1,37 +1,55 @@
-import * as crypto from "crypto";
-import { generateKeyPairSync } from "crypto";
+import { generateKeyPair, privateDecrypt, publicEncrypt } from 'crypto';
 import { writeFileSync } from "fs";
 import fs from "fs";
 import path from "path";
-import { RSAKeyPairOps } from "Models/RsaKeyPairOpts/RsaKeyPairOpts";
+import RSA from "../Models/RSA";
 
 export class Creator
 {
     modulusLength: number = 2048;
-    generateKeys = (options: RSAKeyPairOps, encryptionType: "rsa" = "rsa") =>
+    generateKeys = async () =>
     {
-        return generateKeyPairSync(encryptionType, options);
+        // @ts-ignore
+        return new Promise<KeyPair>((resolve, reject) =>
+        {
+            // @ts-ignore
+            generateKeyPair('rsa', {
+                modulusLength: 4096,
+                publicKeyEncoding: { type: 'pkcs1', format: 'pem' },
+                privateKeyEncoding: { type: 'pkcs1', format: 'pem' },
+            }, (err: Error | null, pub: string, prv: string) =>
+            {
+                if (err) reject();
+                else
+                {
+                    resolve({
+                        pub,
+                        prv,
+                    });
+                }
+            });
+        });
     };
     // first
-    writeKeysToDisk = (options: RSAKeyPairOps, encryptionType: "rsa" = "rsa"): void =>
+    writeKeysToDisk = (): void =>
     {
-        const { publicKey, privateKey } = this.generateKeys(options, encryptionType);
-        const privateLocation: string = "./private.pem";
-        const publicLocation: string = "./public.pem";
-        // if (fs.existsSync(privateLocation.split('./Keys/')[0]) && fs.existsSync(publicLocation.split('./Keys/')[0]))
-        // {
-            writeFileSync(privateLocation, privateKey.toString());
-            writeFileSync(publicLocation, publicKey.toString());
-        // }
-        // else return;
+        const privateLocation: string = `./private.pem`;
+        const publicLocation: string = `./public.pem`;
+        RSA.gen().then(keyPair =>
+        {
+            writeFileSync(publicLocation, keyPair.pub, {encoding:"utf-8"});
+            writeFileSync(privateLocation, keyPair.prv, {encoding:"utf-8"});
+        });
     };
     // then 
     encryptStringWithRsaPublicKey = (toEncrypt: string, relativeOrAbsolutePathToPublicKey: string): string =>
     {
         const absolutePath: string = path.resolve(relativeOrAbsolutePathToPublicKey);
         const publicKey: string = fs.readFileSync(absolutePath, "utf8");
-        const buffer: Buffer = Buffer.from(toEncrypt);
-        const encrypted: Buffer = crypto.publicEncrypt(publicKey, buffer);
+        const buffer: Buffer = Buffer.from(toEncrypt,"utf-8");
+        const encrypted: Buffer = publicEncrypt({
+            key: publicKey,
+        }, buffer);
         return encrypted.toString("base64");
     };
     // or this
@@ -40,11 +58,9 @@ export class Creator
         const absolutePath: string = path.resolve(relativeOrAbsolutePathtoPrivateKey);
         const privateKey: string = fs.readFileSync(absolutePath, "utf8");
         const buffer: Buffer = Buffer.from(toDecrypt, "base64");
-        const decrypted: Buffer = crypto.privateDecrypt(
+        const decrypted: Buffer = privateDecrypt(
             {
                 key: privateKey,
-                passphrase: "passphrase",
-                padding:crypto.constants.RSA_NO_PADDING
             },
             buffer,
         );

@@ -1,48 +1,38 @@
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const argv = yargs(hideBin(process.argv)).argv;
-const { o } = argv;
-const { u } = argv;
-const { l } = argv;
-const { n } = argv;
-console.log(n);
+const { o, u, l, n, e, d } = argv;
 import Obfuscator from "./Obfu/Obfuscator";
 import DeObfuscator from "./Obfu/DeObfuscator";
 import { Creator } from "./TheCreator/Creator";
-import { RSAKeyPairOps } from "./Models/RsaKeyPairOpts/RsaKeyPairOpts";
-import { encryptionType } from "./Models/enxryptionType";
-// let obfuscated;
-// let deObfuscated;
-
-
+//import RSA from "./Models/RSA";
 const cret: Creator = new Creator();
 if (n)
 {
-    cret.writeKeysToDisk(new RSAKeyPairOps(), new encryptionType().encryptionType);
+    //RSA.gen().then(()=> {console.log("keyPair")})
+    cret.writeKeysToDisk();
 }
-
-
 if (l)
 {
     if (o)
     {
-        console.log(Obfuscator(o, l));
+        console.log(Obfuscator(o, l,d));
     }
     if (u)
     {
-        console.log(DeObfuscator(u, l));
+        console.log(DeObfuscator(u, l,e));
     }
 }
 else
 {
     if (o)
     {
-        console.log(Obfuscator(o, ""));
+        console.log(Obfuscator(o, "",e));
     }
     if (u)
     {
-        console.log(DeObfuscator(u, ""));
+        console.log(DeObfuscator(u, "",d));
     }
 }
-console.log("\n\n\n\n\n");
-console.log("this is the end of the demo!");
+// console.log("\n\n\n\n\n");
+// console.log("this is the end of the demo!");

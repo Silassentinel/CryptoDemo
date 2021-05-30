@@ -1,21 +1,23 @@
 import { Creator } from "../TheCreator/Creator";
-const DeObfuscator = (text:string, location:string) : string => 
+const DeObfuscator = (text:string, location:string, decrypt: boolean = false) : string => 
 {
     let temp: string;
     let tempArr: string[];
+    console.log(location);
     temp = text;
-    tempArr = temp.split('_');
-    tempArr = tempArr.reverse();
-    // tempArr = tempArr.filter(element => { if (element !== " ") { return element; } else return; });
-    tempArr = tempArr.map(element => element.toLocaleLowerCase());
-    tempArr = tempArr.map(element =>
+    tempArr = temp.split('_')
+    .reverse()
+    .map(element =>
     {
         // decrypt here
-        if(location.length !== 0 && location !== " "  || location !== "" )
+        if(decrypt)
         {
-            element = new Creator().decryptStringWithRsaPrivateKey(element,location)
+            if(location.length !== 0 && location !== " "  || location !== "" )
+            {
+                element = new Creator().decryptStringWithRsaPrivateKey(element,location)
+            }
+            else element = new Creator().decryptStringWithRsaPrivateKey(element,"./private.pem")
         }
-        else element = new Creator().decryptStringWithRsaPrivateKey(element,"./private.pem")
         element = element.replace('4', "a");
         element = element.replace("3", "e");
         element = element.replace("1", "i");
