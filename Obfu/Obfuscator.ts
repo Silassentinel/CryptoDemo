@@ -1,13 +1,15 @@
-import { string } from "yargs";
 import { Creator } from "../TheCreator/Creator";
 
 const Obfuscator = (text: string, location: string): string => 
 {
     let temp: string;
+    //let tempWordArray: string [];
     let tempArr: string[];
+    let wordCount : number = 0;
     temp = text;
-    tempArr = temp.split('');
-    tempArr = tempArr.filter(element => { if (element !== " ") { return element; } else return; });
+    tempArr = temp.split(' ');
+    // tempArr = tempArr.filter(element => { if (element !== " ") { return element; } else { ++wordCount;
+    //     return}; });
     tempArr = tempArr.map(element => element.toLocaleLowerCase());
     tempArr = tempArr.map(element =>
     {
@@ -32,8 +34,9 @@ const Obfuscator = (text: string, location: string): string =>
         else element = new Creator().encryptStringWithRsaPublicKey(element,"./public.pem")
         return element;
     });
-    temp = tempArr.reverse().join('');
-    temp = temp.replace(',', '');
+    temp = tempArr.reverse().join('_');
+    console.log(wordCount)
+    //temp = temp.replace(',', '');
     return temp;
 };
 

@@ -1,32 +1,38 @@
-// import * as crypto from "crypto"
-const DeObfuscator = (text:string) : string => 
+import { Creator } from "../TheCreator/Creator";
+const DeObfuscator = (text:string, location:string) : string => 
 {
     let temp: string;
-    // let tempArr: string[];
-    // // let length : number = text.length;
+    let tempArr: string[];
     temp = text;
-    // tempArr = temp.split('');
+    tempArr = temp.split('_');
+    tempArr = tempArr.reverse();
     // tempArr = tempArr.filter(element => { if (element !== " ") { return element; } else return; });
-    // tempArr = tempArr.map(element => element.toLocaleLowerCase())
-    // tempArr = tempArr.map(element => {
-    //     element = element.replace('a',"4");
-    //     element = element.replace("e","3");
-    //     element = element.replace("i","1");
-    //     element = element.replace("t","7");
-    //     element = element.replace("l","!");
-    //     element = element.replace("b","8");
-    //     element = element.replace("w","vv");
-    //     element = element.replace("h","#");
-    //     element = element.replace("o","0");
-    //     element = element.replace("g","9");
-    //     element = element.replace("s","5")
-    //     element = element.replace("m","nn");
-    //     element = element.replace("z","2");
-    //     element = new Creator().decryptStringWithRsaPrivateKey(element,"../Keys/private.pem") 
-    //     return element;
-    // })
-    // temp = tempArr.reverse().join('');
-    // temp = temp.replace(',', '');
+    tempArr = tempArr.map(element => element.toLocaleLowerCase());
+    tempArr = tempArr.map(element =>
+    {
+        // decrypt here
+        if(location.length !== 0 && location !== " "  || location !== "" )
+        {
+            element = new Creator().decryptStringWithRsaPrivateKey(element,location)
+        }
+        else element = new Creator().decryptStringWithRsaPrivateKey(element,"./private.pem")
+        element = element.replace('4', "a");
+        element = element.replace("3", "e");
+        element = element.replace("1", "i");
+        element = element.replace("7", "t");
+        element = element.replace("!", "l");
+        element = element.replace("8", "b");
+        element = element.replace("v", "w");
+        element = element.replace("#", "h");
+        element = element.replace("0", "o");
+        element = element.replace("9", "g");
+        element = element.replace("5", "s");
+        element = element.replace("nn", "m");
+        element = element.replace("2", "z");
+        return element;
+    });
+    temp = tempArr.join(' ');
+    //temp = temp.replace(',', '');
     return temp;
 }
 

@@ -44,6 +44,7 @@ export class Creator
             {
                 key: privateKey,
                 passphrase: "passphrase",
+                padding:crypto.constants.RSA_NO_PADDING
             },
             buffer,
         );
