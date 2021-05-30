@@ -21,3 +21,4 @@ use the n flag to generate new keys
 TODO: 
 
 - flag to write to disk with location where to absolut and relative
+- flag to enable encryption
