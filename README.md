@@ -16,5 +16,6 @@ the l parameter only works in combi with u or o and is to specify the filepath o
 
 
 TODO: 
-flag for key generation 
-flag to write to disk with location where to absolut and relative
+- flag for key generation 
+
+- flag to write to disk with location where to absolut and relative
