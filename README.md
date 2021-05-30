@@ -13,9 +13,9 @@ paramaters:
 
 MAN:
 --
-the o parameter obfuscates the text in the quotes
-the u parameter DeObfuscates the text in quotes
-the l parameter only works in combi with u or o and is to specify the filepath of a pem file to use
+- the o parameter obfuscates the text in the quotes
+- the u parameter DeObfuscates the text in quotes
+- the l parameter only works in combi with u or o and is to specify the filepath of a pem file to use
 
 use the n flag to generate new keys
 
